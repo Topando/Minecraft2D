@@ -2,6 +2,7 @@ import pygame
 
 import handler
 WIDTH, HEIGHT = 1600, 960
+MAP_LIST = []
 
 TITLE_WIDTH = WIDTH // 16
 TITLE_HEIGHT = HEIGHT // 16

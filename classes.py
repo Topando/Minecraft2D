@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         player_image = pygame.transform.scale(player_image, (WIDTH // 16, HEIGHT // 4))
         self.image = player_image
         self.rect = self.image.get_rect().move(
-            TITLE_WIDTH * pos_x, HEIGHT - player_image.get_size()[1] - TITLE_HEIGHT)
+            WIDTH // 2, HEIGHT // 2)
 
 
 class Tile(pygame.sprite.Sprite):
