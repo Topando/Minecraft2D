@@ -5,19 +5,31 @@ from handler import *
 
 def start_game():
     pygame.init()
-    new_player = add_new_player()
+    camera = Camera()
 
+    new_player = add_new_player()
+    generate_level()
     pygame.display.set_caption('Minecraft')
-    size = width, height = 1500, 1000
+    size = WIDTH, HEIGHT = 1600, 960
     screen = pygame.display.set_mode(size)
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        screen.fill((255, 255, 255))
-        all_sprites.draw(screen)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    change_image(new_player, "player_left")
+                    new_player.rect.x -= WIDTH // 16
 
-        print(new_player.rect.w, new_player.rect.h)
+                if event.key == pygame.K_d:
+                    change_image(new_player, "player_right")
+                    new_player.rect.x += WIDTH // 16
+        camera.update(new_player);
+        # обновляем положение всех спрайтов
+        for sprite in all_sprites:
+            camera.apply(sprite)
+        screen.fill((0, 191, 255))
+        all_sprites.draw(screen)
         pygame.display.flip()
     pygame.quit()
