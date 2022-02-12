@@ -7,6 +7,7 @@ from classes import *
 import config
 import asyncio
 import time
+import random
 
 
 def add_new_player():
@@ -51,6 +52,31 @@ def generate_level(pos_x, pos_y=0):
             if y == 12:
                 print(y)
                 Tile('block_of_land', pos_x + x, y - pos_y)
-            elif 12 < y < 30:
-                Tile('stone_block', pos_x + x, y - pos_y)
+            elif 12 < y < 15:
+                Tile(blocks_spawn_y_13(), pos_x + x, y - pos_y)
+            elif 14 < y < 20:
+                Tile(blocks_spawn_y_15_19(), pos_x + x, y - pos_y)
 
+
+def blocks_spawn_y_13():
+    if random.randint(0, 1) == 1:
+        return "stone_block"
+    return "ground_block"
+
+
+def blocks_spawn_y_15_19():
+    y = random.randint(0, 10)
+    if y <= 5:
+        return "stone_block"
+    elif 5 < y < 7:
+        return "ground_block"
+    elif y == 9:
+        return "gold_block"
+    return "block_of_iron"
+
+
+def setting_map_list(chunk):
+    global MAP_LIST
+    for i in range(len(MAP_LIST)):
+        if i != chunk and MAP_LIST[i] == "@":
+            MAP_LIST[i] = "*"

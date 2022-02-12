@@ -25,24 +25,21 @@ def start_game():
                     new_player.rect.x -= WIDTH // 16
                     pos_player -= 1
                     chunk = pos_player // 17
-                    MAP_LIST[chunk] = "@"
                 if event.key == pygame.K_d:
                     change_image(new_player, "player_right")
                     new_player.rect.x += WIDTH // 16
                     pos_player += 1
                     chunk = pos_player // 17
-                    # MAP_LIST[chunk] = "@"
+                    print(chunk)
+                    print(MAP_LIST)
                     try:
-                        #print((pos_player + 8) // 17)
                         MAP_LIST[(pos_player + 8) // 17]
-                        #print(MAP_LIST)
                     except Exception:
-                        print(all_sprites)
-                        print(pos_player + 8)
                         generate_level(pos_player + 8 - 0.5, 2)
-                        pygame.time.delay(2000)
-                        print(all_sprites)
+                        pygame.time.delay(8000)
+                MAP_LIST[chunk] = "@"
 
+                setting_map_list(chunk)
         camera.update(new_player)
         # обновляем положение всех спрайтов
         for sprite in all_sprites:
