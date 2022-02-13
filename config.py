@@ -1,13 +1,24 @@
 import pygame
 
 import handler
+
+# Size
 WIDTH, HEIGHT = 1600, 960
+######
+# MAP
 MAP_LIST = []
-LEFT_MAP_LIST = []
+LEFT_MAP = []
+####
+
+# Size BLOCK
 TITLE_WIDTH = WIDTH // 16
 TITLE_HEIGHT = HEIGHT // 16
+###
 
-
+# distance
+IMPACT_DISTANCE_X = 4
+IMPACT_DISTANCE_Y = 5
+###
 folder_blocks = "blocks/"
 folder_player = f"player/"
 

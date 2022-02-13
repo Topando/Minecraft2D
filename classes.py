@@ -8,7 +8,7 @@ import handler
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, image):
         super().__init__(player_group, all_sprites)
-
+        self.name = "player"
         player_image = handler.image_player_right(image)
         player_image = pygame.transform.scale(player_image, (WIDTH // 16, HEIGHT // 4))
         self.image = player_image
@@ -19,10 +19,12 @@ class Player(pygame.sprite.Sprite):
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
+        self.name = tile_type
         self.image = handler.image_texture(tile_type)
         self.image = pygame.transform.scale(self.image, (TITLE_WIDTH, TITLE_HEIGHT))
         self.rect = self.image.get_rect().move(
             TITLE_WIDTH * pos_x, TITLE_HEIGHT * pos_y)
+        print(pos_x * TITLE_WIDTH)
 
 
 class Camera:

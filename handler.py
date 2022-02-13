@@ -45,17 +45,20 @@ def create_sprite_group():
     return all_sprites, tiles_group, player_group
 
 
-def generate_level(pos_x, pos_y=0):
-    MAP_LIST.append("*")
-    for y in range(20):
+def generate_level(pos_x, change_Y, pos_y=0, place="right"):
+    if place == "right":
+        MAP_LIST.append("*")
+    else:
+        LEFT_MAP.append("*")
+    for y in range(12, 20):
         for x in range(17):
             if y == 12:
                 print(y)
-                Tile('block_of_land', pos_x + x, y - pos_y)
+                Tile('block_of_land', pos_x + x, y - pos_y - change_Y)
             elif 12 < y < 15:
-                Tile(blocks_spawn_y_13(), pos_x + x, y - pos_y)
+                Tile(blocks_spawn_y_13(), pos_x + x, y - pos_y - change_Y)
             elif 14 < y < 20:
-                Tile(blocks_spawn_y_15_19(), pos_x + x, y - pos_y)
+                Tile(blocks_spawn_y_15_19(), pos_x + x, y - pos_y - change_Y)
 
 
 def blocks_spawn_y_13():
@@ -77,6 +80,21 @@ def blocks_spawn_y_15_19():
 
 def setting_map_list(chunk):
     global MAP_LIST
-    for i in range(len(MAP_LIST)):
-        if i != chunk and MAP_LIST[i] == "@":
+    global LEFT_MAP
+    if chunk > 0:
+        for i in range(len(MAP_LIST)):
+            if i != chunk and MAP_LIST[i] == "@":
+                MAP_LIST[i] = "*"
+        for i in range(len(LEFT_MAP)):
+            LEFT_MAP[i] = "*"
+    else:
+        for i in range(len(MAP_LIST)):
             MAP_LIST[i] = "*"
+        for i in range(len(LEFT_MAP)):
+            if -i != chunk and LEFT_MAP[i] == "@":
+                LEFT_MAP[i] = "*"
+
+
+def check_down(player, sprite):
+    if sprite.rect.y == player.rect.y + player.rect.size[1] and sprite.rect.x == player.rect.x:
+        return True
