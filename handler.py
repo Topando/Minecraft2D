@@ -50,15 +50,18 @@ def generate_level(pos_x, change_Y, pos_y=0, place="right"):
         MAP_LIST.append("*")
     else:
         LEFT_MAP.append("*")
-    for y in range(12, 20):
+    for y in range(12, 22):
         for x in range(17):
             if y == 12:
-                print(y)
                 Tile('block_of_land', pos_x + x, y - pos_y - change_Y)
             elif 12 < y < 15:
                 Tile(blocks_spawn_y_13(), pos_x + x, y - pos_y - change_Y)
-            elif 14 < y < 20:
-                Tile(blocks_spawn_y_15_19(), pos_x + x, y - pos_y - change_Y)
+            elif 14 < y < 19:
+                Tile(blocks_spawn_y_15_18(), pos_x + x, y - pos_y - change_Y)
+            elif 19 <= y < 21:
+                Tile(blocks_spawn_y_19_20(), pos_x + x, y - pos_y - change_Y)
+            elif y == 21:
+                Tile("bedrock_block", pos_x + x, y - pos_y - change_Y)
 
 
 def blocks_spawn_y_13():
@@ -67,7 +70,7 @@ def blocks_spawn_y_13():
     return "ground_block"
 
 
-def blocks_spawn_y_15_19():
+def blocks_spawn_y_15_18():
     y = random.randint(0, 10)
     if y <= 5:
         return "stone_block"
@@ -76,6 +79,14 @@ def blocks_spawn_y_15_19():
     elif y == 9:
         return "gold_block"
     return "block_of_iron"
+
+
+def blocks_spawn_y_19_20():
+    y = random.randint(0, 1)
+    if y == 0:
+        return "stone_block"
+    else:
+        return "bedrock_block"
 
 
 def setting_map_list(chunk):
@@ -98,3 +109,57 @@ def setting_map_list(chunk):
 def check_down(player, sprite):
     if sprite.rect.y == player.rect.y + player.rect.size[1] and sprite.rect.x == player.rect.x:
         return True
+
+
+def putting_blocks(sprite_x, sprite_y, new_player, event):
+    if sprite_x <= event.pos[0] <= sprite_x + TITLE_WIDTH and sprite_y <= event.pos[1] <= sprite_y + TITLE_HEIGHT:
+        if abs(new_player.rect.x - sprite_x) < IMPACT_DISTANCE_X * TITLE_WIDTH and abs(
+                new_player.rect.y + new_player.rect.size[
+                    1] - sprite_y) <= IMPACT_DISTANCE_Y * TITLE_HEIGHT:
+            if sprite_y <= event.pos[1] <= sprite_y + TITLE_HEIGHT * 0.33:
+                Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 0.5,
+                     (sprite_y // TITLE_HEIGHT) - 1)
+
+            elif sprite_y + TITLE_HEIGHT * 0.66 <= event.pos[1] <= sprite_y + TITLE_HEIGHT:
+                Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 0.5,
+                     (sprite_y // TITLE_HEIGHT) + 1)
+            elif sprite_x <= event.pos[0] <= sprite_x + TITLE_WIDTH * 0.5 and (
+                    new_player.rect.x - sprite_x) < 0:
+                Tile('block_of_land', (sprite_x // TITLE_WIDTH) - 0.5,
+                     (sprite_y // TITLE_HEIGHT))
+            elif sprite_x + TITLE_WIDTH * 0.5 <= event.pos[0] <= sprite_x + TITLE_WIDTH and (
+                    new_player.rect.x - sprite_x) > 0:
+                Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 1.5,
+                     (sprite_y // TITLE_HEIGHT))
+
+
+def remove_blocks(sprite_x, sprite_y, new_player, event, sprite):
+    if (sprite_x <= event.pos[0] <= sprite_x + TITLE_WIDTH and sprite_y <= event.pos[
+        1] <= sprite_y + TITLE_HEIGHT) and sprite.name != "player" and sprite.name != "bedrock_block" and (abs(
+        new_player.rect.x - sprite_x) < IMPACT_DISTANCE_X * TITLE_WIDTH and abs(
+        new_player.rect.y + new_player.rect.size[
+            1] - sprite_y) <= IMPACT_DISTANCE_Y * TITLE_HEIGHT):
+        sprite.kill()
+
+
+def check_next_blocks(new_player, side, change_Y):
+    for sprite in all_sprites:
+        if side == "right":
+            if (sprite.rect.x != new_player.rect.x + TITLE_WIDTH) or ((
+                                                                              new_player.rect.y <= sprite.rect.y < new_player.rect.y +
+                                                                              new_player.rect.size[1]) is False):
+                continue
+            else:
+                print(new_player.rect.y + change_Y * TITLE_HEIGHT, change_Y,
+                      new_player.rect.y + new_player.rect.size[1] + change_Y * TITLE_HEIGHT, sprite.rect.y)
+                return False
+        else:
+            if (sprite.rect.x != new_player.rect.x - TITLE_WIDTH) or ((
+                                                                              new_player.rect.y <= sprite.rect.y < new_player.rect.y +
+                                                                              new_player.rect.size[1]) is False):
+                continue
+            else:
+                print(new_player.rect.y + change_Y * TITLE_HEIGHT, change_Y,
+                      new_player.rect.y + new_player.rect.size[1] + change_Y * TITLE_HEIGHT, sprite.rect.y)
+                return False
+    return True

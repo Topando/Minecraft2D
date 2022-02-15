@@ -28,7 +28,8 @@ textures = {
     "block_of_land": (folder_blocks + 'grass_block.png'),
     "ground_block": (folder_blocks + 'ground_block.png'),
     "block_of_iron": (folder_blocks + 'block_of_iron.png'),
-    "gold_block": (folder_blocks + 'gold_block.png')
+    "gold_block": (folder_blocks + 'gold_block.png'),
+    "bedrock_block": (folder_blocks + 'bedrock_block.png')
 }
 
 models = {

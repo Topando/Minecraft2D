@@ -30,39 +30,38 @@ def start_game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     change_image(new_player, "player_left")
-                    new_player.rect.x -= WIDTH // 16
-                    pos_player -= 1
-                    chunk = pos_player // 17
+                    if check_next_blocks(new_player, "left", change_Y):
+                        new_player.rect.x -= WIDTH // 16
+                        pos_player -= 1
+                        chunk = pos_player // 17
 
-                    if len(LEFT_MAP) == abs(pos_player - 8) // 17 and pos_player - 8 < 0:
-                        generate_level(-16.5, change_Y, 2, "left")
-                        LEFT_MAP[chunk] = "@"
+                        if len(LEFT_MAP) == abs(pos_player - 8) // 17 and pos_player - 8 < 0:
+                            generate_level(-16.5, change_Y, 2, "left")
+                            LEFT_MAP[chunk] = "@"
 
                 if event.key == pygame.K_d:
                     change_image(new_player, "player_right")
-                    new_player.rect.x += WIDTH // 16
-                    pos_player += 1
-                    chunk = pos_player // 17
-                    print(chunk)
-                    print(MAP_LIST)
-                    print(pos_player)
-                    Tile('block_of_land', 8,  2)
+                    if check_next_blocks(new_player, "right", change_Y):
+                        new_player.rect.x += WIDTH // 16
+                        pos_player += 1
+                        chunk = pos_player // 17
 
-                    if len(MAP_LIST) == abs(pos_player + 8) // 17 and pos_player + 8 > 0:
-                        generate_level(17 - 0.5, change_Y, 2)
-                        pygame.time.delay(8000)
-                        MAP_LIST[chunk] == "@"
+                        if len(MAP_LIST) == abs(pos_player + 8) // 17 and pos_player + 8 > 0:
+                            generate_level(17 - 0.5, change_Y, 2)
+                            pygame.time.delay(8000)
+                            MAP_LIST[chunk] == "@"
                 setting_map_list(chunk)
-                print(LEFT_MAP, MAP_LIST)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for sprite in all_sprites:
-                    sprite_x = sprite.rect.x
-                    sprite_y = sprite.rect.y
-                    if (sprite_x <= event.pos[0] <= sprite_x + TITLE_WIDTH and sprite_y <= event.pos[
-                        1] <= sprite_y + TITLE_HEIGHT) and sprite.name != "player" and (abs(
-                        new_player.rect.x - sprite_x) < IMPACT_DISTANCE_X * TITLE_WIDTH and abs(
-                        new_player.rect.y + new_player.rect.size[1] - sprite_y) <= IMPACT_DISTANCE_Y * TITLE_HEIGHT):
-                        sprite.kill()
+                if event.button == 1:
+                    for sprite in all_sprites:
+                        sprite_x = sprite.rect.x
+                        sprite_y = sprite.rect.y
+                        remove_blocks(sprite_x, sprite_y, new_player, event, sprite)
+                if event.button == 3:
+                    for sprite in all_sprites:
+                        sprite_x = sprite.rect.x
+                        sprite_y = sprite.rect.y
+                        putting_blocks(sprite_x, sprite_y, new_player, event)
         camera.update(new_player)
         # обновляем положение всех спрайтов
         for sprite in all_sprites:
