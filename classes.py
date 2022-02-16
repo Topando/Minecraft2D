@@ -24,7 +24,6 @@ class Tile(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (TITLE_WIDTH, TITLE_HEIGHT))
         self.rect = self.image.get_rect().move(
             TITLE_WIDTH * pos_x, TITLE_HEIGHT * pos_y)
-        print(pos_x * TITLE_WIDTH)
 
 
 class Camera:

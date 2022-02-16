@@ -117,20 +117,53 @@ def putting_blocks(sprite_x, sprite_y, new_player, event):
                 new_player.rect.y + new_player.rect.size[
                     1] - sprite_y) <= IMPACT_DISTANCE_Y * TITLE_HEIGHT:
             if sprite_y <= event.pos[1] <= sprite_y + TITLE_HEIGHT * 0.33:
-                Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 0.5,
-                     (sprite_y // TITLE_HEIGHT) - 1)
+                if check_pos_new_block(sprite_x, sprite_y, "up", new_player):
+                    Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 0.5,
+                         (sprite_y // TITLE_HEIGHT) - 1)
 
             elif sprite_y + TITLE_HEIGHT * 0.66 <= event.pos[1] <= sprite_y + TITLE_HEIGHT:
-                Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 0.5,
-                     (sprite_y // TITLE_HEIGHT) + 1)
+                if check_pos_new_block(sprite_x, sprite_y, "lower", new_player):
+                    Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 0.5,
+                         (sprite_y // TITLE_HEIGHT) + 1)
             elif sprite_x <= event.pos[0] <= sprite_x + TITLE_WIDTH * 0.5 and (
                     new_player.rect.x - sprite_x) < 0:
-                Tile('block_of_land', (sprite_x // TITLE_WIDTH) - 0.5,
-                     (sprite_y // TITLE_HEIGHT))
+                if check_pos_new_block(sprite_x, sprite_y, "left", new_player):
+                    Tile('block_of_land', (sprite_x // TITLE_WIDTH) - 0.5,
+                         (sprite_y // TITLE_HEIGHT))
             elif sprite_x + TITLE_WIDTH * 0.5 <= event.pos[0] <= sprite_x + TITLE_WIDTH and (
                     new_player.rect.x - sprite_x) > 0:
-                Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 1.5,
-                     (sprite_y // TITLE_HEIGHT))
+                if check_pos_new_block(sprite_x, sprite_y, "right", new_player):
+                    Tile('block_of_land', (sprite_x // TITLE_WIDTH) + 1.5,
+                         (sprite_y // TITLE_HEIGHT))
+
+
+def check_pos_new_block(sprite_x, sprite_y, side, new_player):
+    for sprite in all_sprites:
+        if side == "left":
+            if sprite.rect.x == sprite_x - TITLE_WIDTH:
+                if sprite.rect.y == sprite_y or (new_player.rect.y <= sprite_y <= new_player.rect.y + \
+                                                 new_player.rect.size[
+                                                     1] and new_player.rect.x == sprite_x - TITLE_WIDTH):
+                    return False
+        elif side == "right":
+            if sprite.rect.x == sprite_x + TITLE_WIDTH:
+                if sprite.rect.y == sprite_y or (new_player.rect.y <= sprite_y <= new_player.rect.y + \
+                                                 new_player.rect.size[
+                                                     1] and new_player.rect.x == sprite_x + TITLE_WIDTH):
+                    return False
+        elif side == "up":
+            if sprite.rect.x == sprite_x:
+                if sprite.rect.y == sprite_y - TITLE_HEIGHT or (
+                        new_player.rect.y <= sprite.rect.y <= new_player.rect.y + new_player.rect.size[
+                    1] and new_player.rect.x == sprite_x):
+                    return False
+        elif side == "lower":
+            if sprite.rect.x == sprite_x:
+                if sprite.rect.y == sprite_y + TITLE_HEIGHT or (
+                        new_player.rect.y <= sprite.rect.y <= new_player.rect.y + new_player.rect.size[
+                    1] and new_player.rect.x == sprite_x):
+                    return False
+    return True
 
 
 def remove_blocks(sprite_x, sprite_y, new_player, event, sprite):
@@ -139,6 +172,7 @@ def remove_blocks(sprite_x, sprite_y, new_player, event, sprite):
         new_player.rect.x - sprite_x) < IMPACT_DISTANCE_X * TITLE_WIDTH and abs(
         new_player.rect.y + new_player.rect.size[
             1] - sprite_y) <= IMPACT_DISTANCE_Y * TITLE_HEIGHT):
+        INVENTORY[sprite.name] += 1
         sprite.kill()
 
 
@@ -150,16 +184,29 @@ def check_next_blocks(new_player, side, change_Y):
                                                                               new_player.rect.size[1]) is False):
                 continue
             else:
-                print(new_player.rect.y + change_Y * TITLE_HEIGHT, change_Y,
-                      new_player.rect.y + new_player.rect.size[1] + change_Y * TITLE_HEIGHT, sprite.rect.y)
                 return False
         else:
-            if (sprite.rect.x != new_player.rect.x - TITLE_WIDTH) or ((
-                                                                              new_player.rect.y <= sprite.rect.y < new_player.rect.y +
-                                                                              new_player.rect.size[1]) is False):
+            if (sprite.rect.x != new_player.rect.x - TITLE_WIDTH) or (
+                    (new_player.rect.y <= sprite.rect.y < new_player.rect.y + new_player.rect.size[1]) is False):
                 continue
             else:
-                print(new_player.rect.y + change_Y * TITLE_HEIGHT, change_Y,
-                      new_player.rect.y + new_player.rect.size[1] + change_Y * TITLE_HEIGHT, sprite.rect.y)
                 return False
+    return True
+
+
+def app_inventory():
+    for key in textures:
+        INVENTORY[key] = 0
+
+
+def checK_up_block(side, new_player):
+    for sprite in all_sprites:
+        if side == "right":
+            if sprite.rect.x == new_player.rect.x + TITLE_WIDTH:
+                if new_player.rect.y - TITLE_HEIGHT <= sprite.rect.y < new_player.rect.y + new_player.rect.size[1] - TITLE_HEIGHT:
+                    return False
+        if side == 'left':
+            if sprite.rect.x == new_player.rect.x - TITLE_WIDTH:
+                if new_player.rect.y - TITLE_HEIGHT <= sprite.rect.y < new_player.rect.y + new_player.rect.size[1] - TITLE_HEIGHT:
+                    return False
     return True
