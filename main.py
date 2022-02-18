@@ -15,7 +15,9 @@ def start_game():
     size = WIDTH, HEIGHT = 1600, 960
     screen = pygame.display.set_mode(size)
     running = True
-
+    start(screen)
+    set_music("all.mp3")
+    pygame.mixer.music.play(-1)
     pos_player = new_player.rect.x // TITLE_WIDTH
     while running:
         chunk = 0
@@ -32,6 +34,9 @@ def start_game():
 
             if event.type == pygame.KEYDOWN:
                 keys = pygame.key.get_pressed()
+                if keys[pygame.K_ESCAPE]:
+                    game_over(screen)
+                    running = False
                 if keys[pygame.K_SPACE] and keys[pygame.K_d]:
                     change_image(new_player, "player_right")
                     if checK_up_block("right", new_player):
@@ -39,7 +44,7 @@ def start_game():
                         new_player.rect.y -= TITLE_HEIGHT
                         pos_player += 1
                         change_Y -= 1
-                        print(3123)
+                        set_sound("jump_sound")
 
                 elif keys[pygame.K_SPACE] and keys[pygame.K_a]:
                     change_image(new_player, "player_left")
@@ -48,6 +53,8 @@ def start_game():
                         new_player.rect.y -= TITLE_HEIGHT
                         pos_player -= 1
                         change_Y -= 1
+                        set_sound("jump_sound")
+
                 elif event.key == pygame.K_a:
                     change_image(new_player, "player_left")
                     if check_next_blocks(new_player, "left", change_Y):
@@ -68,17 +75,31 @@ def start_game():
                     generate_level(17 - 0.5, change_Y, 2)
                     MAP_LIST[chunk] == "@"
                 setting_map_list(chunk)
+                if keys[pygame.K_0]:
+                    pygame.mixer.music.pause()
+                if keys[pygame.K_9]:
+                    pygame.mixer.music.unpause()
+                if keys[pygame.K_p]:
+                    volume = pygame.mixer.music.get_volume()
+                    pygame.mixer.music.set_volume(volume + 0.25)
+                if keys[pygame.K_MINUS]:
+                    volume = pygame.mixer.music.get_volume()
+                    pygame.mixer.music.set_volume(volume - 0.25)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     for sprite in all_sprites:
                         sprite_x = sprite.rect.x
                         sprite_y = sprite.rect.y
                         remove_blocks(sprite_x, sprite_y, new_player, event, sprite)
+                    set_sound("break_block_sound")
+
                 if event.button == 3:
                     for sprite in all_sprites:
                         sprite_x = sprite.rect.x
                         sprite_y = sprite.rect.y
                         putting_blocks(sprite_x, sprite_y, new_player, event)
+                    set_sound("put_block_sound")
+
         camera.update(new_player)
         # обновляем положение всех спрайтов
         for sprite in all_sprites:

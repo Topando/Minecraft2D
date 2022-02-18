@@ -203,10 +203,50 @@ def checK_up_block(side, new_player):
     for sprite in all_sprites:
         if side == "right":
             if sprite.rect.x == new_player.rect.x + TITLE_WIDTH:
-                if new_player.rect.y - TITLE_HEIGHT <= sprite.rect.y < new_player.rect.y + new_player.rect.size[1] - TITLE_HEIGHT:
+                if new_player.rect.y - TITLE_HEIGHT <= sprite.rect.y < new_player.rect.y + new_player.rect.size[
+                    1] - TITLE_HEIGHT:
                     return False
         if side == 'left':
             if sprite.rect.x == new_player.rect.x - TITLE_WIDTH:
-                if new_player.rect.y - TITLE_HEIGHT <= sprite.rect.y < new_player.rect.y + new_player.rect.size[1] - TITLE_HEIGHT:
+                if new_player.rect.y - TITLE_HEIGHT <= sprite.rect.y < new_player.rect.y + new_player.rect.size[
+                    1] - TITLE_HEIGHT:
                     return False
     return True
+
+
+def start(screen):
+    img = load_image("backgrounds\\start.png")
+    img = pygame.transform.scale(img, (WIDTH, HEIGHT))
+    set_music("start_track.mp3")
+    pygame.mixer.music.play(-1)
+    background = img
+    screen.blit(background, (0, 0))
+    pygame.display.flip()  # <-- Flush drawing ops to the screen
+    pygame.time.delay(5000)
+    pygame.mixer.music.pause()
+
+
+def game_over(screen):
+    img = load_image("backgrounds\\game_over.png")
+    img = pygame.transform.scale(img, (WIDTH, HEIGHT))
+
+    background = img
+    screen.blit(background, (0, 0))
+    pygame.display.flip()  # <-- Flush drawing ops to the screen
+
+    pygame.time.delay(5000)
+
+
+def set_music(track):
+    pygame.mixer.music.load(f"data/soundtrack/{track}")
+    pygame.mixer.music.set_volume(0.25)
+
+
+def set_sound(sound_name):
+    try:
+        sound = pygame.mixer.Sound(f"data/sounds/{sound_name}.ogg")
+        pygame.mixer.Sound.set_volume(sound, 0.5)
+        sound.play()
+    except Exception:
+        print("Звук не найден")
+
