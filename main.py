@@ -5,21 +5,25 @@ from handler import *
 
 def start_game():
     pygame.init()
+
     camera = Camera()
+    size = WIDTH, HEIGHT = 1600, 960
     new_player = add_new_player()
     app_inventory()
     pygame.time.delay(1000)
     change_Y = 0
     generate_level(0, change_Y)
     pygame.display.set_caption('Minecraft')
-    size = WIDTH, HEIGHT = 1600, 960
     screen = pygame.display.set_mode(size)
     running = True
     start(screen)
     set_music("all.mp3")
     pygame.mixer.music.play(-1)
     pos_player = new_player.rect.x // TITLE_WIDTH
+    Flright = False
+    Flleft = False
     while running:
+
         chunk = 0
         flag = True
         for sprite in all_sprites:
@@ -58,12 +62,15 @@ def start_game():
                 elif event.key == pygame.K_a:
                     change_image(new_player, "player_left")
                     if check_next_blocks(new_player, "left", change_Y):
+                        change_image(new_player, "model_player_left_go")
+                        Flleft = True
                         new_player.rect.x -= WIDTH // 16
                         pos_player -= 1
                         chunk = pos_player // 17
                 elif event.key == pygame.K_d:
-                    change_image(new_player, "player_right")
                     if check_next_blocks(new_player, "right", change_Y):
+                        change_image(new_player, "model_player_right_go")
+                        Flright = True
                         new_player.rect.x += WIDTH // 16
                         pos_player += 1
                         chunk = pos_player // 17
@@ -92,6 +99,7 @@ def start_game():
                         sprite_y = sprite.rect.y
                         remove_blocks(sprite_x, sprite_y, new_player, event, sprite)
                     set_sound("break_block_sound")
+                    broken_blocks()
 
                 if event.button == 3:
                     for sprite in all_sprites:
@@ -107,4 +115,13 @@ def start_game():
         screen.fill((0, 191, 255))
         all_sprites.draw(screen)
         pygame.display.flip()
+        if Flright:
+            change_image(new_player, "player_right")
+            Flright = False
+        elif Flleft:
+            change_image(new_player, "player_left")
+            Flleft = False
+
+        pygame.time.delay(200)
+    clear_file()
     pygame.quit()

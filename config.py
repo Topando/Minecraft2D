@@ -34,7 +34,9 @@ textures = {
 
 models = {
     "player_right": (folder_player + 'model_player_right.png'),
-    "player_left": (folder_player + 'model_player_left.png')
+    "player_left": (folder_player + 'model_player_left.png'),
+    "model_player_right_go": (folder_player + "model_player_right_go.png"),
+    "model_player_left_go": (folder_player + "model_player_left_go.png")
 
 }
 

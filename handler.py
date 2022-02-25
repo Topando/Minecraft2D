@@ -1,5 +1,8 @@
 import os
 import sys
+
+from pygame.examples.eventlist import font
+
 from config import *
 import pygame
 from main import *
@@ -227,13 +230,31 @@ def start(screen):
 
 
 def game_over(screen):
-    img = load_image("backgrounds\\game_over.png")
-    img = pygame.transform.scale(img, (WIDTH, HEIGHT))
+    file = open("data/broken_blocks.txt", mode="r")
+    file = file.read().splitlines()
+    if len(file) != 0:
+        col = file[0]
+    else:
+        col = 0
 
-    background = img
-    screen.blit(background, (0, 0))
+    intro_text = ["Подсчет результатов ", "",
+                  f"Сломанно блоков {col}"]
+
+    fon = pygame.transform.scale(load_image('backgrounds/game_over.png'), (WIDTH, HEIGHT))
+    screen.blit(fon, (0, 0))
+
+    font = pygame.font.Font(None, 30)
+    text_coord = 50
+
+    for line in intro_text:
+        string_rendered = font.render(line, 1, pygame.Color('white'))
+        intro_rect = string_rendered.get_rect()
+        text_coord += 10
+        intro_rect.top = text_coord
+        intro_rect.x = 10
+        text_coord += intro_rect.height
+        screen.blit(string_rendered, intro_rect)
     pygame.display.flip()  # <-- Flush drawing ops to the screen
-
     pygame.time.delay(5000)
 
 
@@ -250,3 +271,23 @@ def set_sound(sound_name):
     except Exception:
         print("Звук не найден")
 
+
+def broken_blocks():
+    try:
+        file = open("data/broken_blocks.txt", mode="r")
+        file_string = file.read().splitlines()
+        file = open("data/broken_blocks.txt", mode="w")
+        if len(file_string) == 0:
+            file.write(str(1))
+        else:
+            file.write(str(int(file_string[0]) + 1))
+    except Exception:
+        print("Ошибка")
+
+
+def clear_file():
+    try:
+        file = open("data/broken_blocks.txt", mode="w")
+        file.write()
+    except Exception:
+        print("Ошибка")
